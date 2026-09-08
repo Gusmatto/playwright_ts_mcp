@@ -1,1 +1,1 @@
-# playwright_ts_ai
+# playwright_ts_mcp
