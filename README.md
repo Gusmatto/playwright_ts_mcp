@@ -1,5 +1,4 @@
 # playwright_ts_mcp
-# playwright_ts_mcp
 
 Playwright + TypeScript test automation for [automationexercise.com](https://www.automationexercise.com/),
 built with an agentic workflow: Playwright MCP, Test Agents (planner, generator, healer),
