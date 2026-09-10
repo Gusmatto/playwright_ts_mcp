@@ -1,0 +1,96 @@
+- generic [active] [ref=f85e1]:
+  - banner [ref=f85e2]:
+    - generic [ref=f85e5]:
+      - link [ref=f85e8] [cursor=pointer]:
+        - /url: /
+        - img "Website for automation practice" [ref=f85e9]
+      - list [ref=f85e12]:
+        - listitem [ref=f85e13]:
+          - link " Home" [ref=f85e14] [cursor=pointer]:
+            - /url: /
+            - generic [ref=f85e15]: 
+            - text: Home
+        - listitem [ref=f85e16]:
+          - link " Products" [ref=f85e17] [cursor=pointer]:
+            - /url: /products
+            - generic [ref=f85e18]: 
+            - text: Products
+        - listitem [ref=f85e19]:
+          - link " Cart" [ref=f85e20] [cursor=pointer]:
+            - /url: /view_cart
+            - generic [ref=f85e21]: 
+            - text: Cart
+        - listitem [ref=f85e22]:
+          - link " Signup / Login" [ref=f85e23] [cursor=pointer]:
+            - /url: /login
+            - generic [ref=f85e24]: 
+            - text: Signup / Login
+        - listitem [ref=f85e25]:
+          - link " Test Cases" [ref=f85e26] [cursor=pointer]:
+            - /url: /test_cases
+            - generic [ref=f85e27]: 
+            - text: Test Cases
+        - listitem [ref=f85e28]:
+          - link " API Testing" [ref=f85e29] [cursor=pointer]:
+            - /url: /api_list
+            - generic [ref=f85e30]: 
+            - text: API Testing
+        - listitem [ref=f85e31]:
+          - link " Video Tutorials" [ref=f85e32] [cursor=pointer]:
+            - /url: https://www.youtube.com/c/AutomationExercise
+            - generic [ref=f85e33]: 
+            - text: Video Tutorials
+        - listitem [ref=f85e34]:
+          - link " Contact us" [ref=f85e35] [cursor=pointer]:
+            - /url: /contact_us
+            - generic [ref=f85e36]: 
+            - text: Contact us
+  - generic [ref=f85e38]:
+    - list [ref=f85e40]:
+      - listitem [ref=f85e41]:
+        - link "Home" [ref=f85e42] [cursor=pointer]:
+          - /url: /
+      - listitem [ref=f85e43]: Shopping Cart
+    - generic [ref=f85e44]: Proceed To Checkout
+    - table [ref=f85e50]:
+      - rowgroup [ref=f85e51]:
+        - row [ref=f85e52]:
+          - cell "Item" [ref=f85e53]
+          - cell "Description" [ref=f85e54]
+          - cell "Price" [ref=f85e55]
+          - cell "Quantity" [ref=f85e56]
+          - cell "Total" [ref=f85e57]
+          - cell [ref=f85e58]
+      - rowgroup [ref=f85e59]:
+        - row [ref=f85e60]:
+          - cell [ref=f85e61]:
+            - link [ref=f85e62] [cursor=pointer]:
+              - /url: ""
+              - img "Product Image" [ref=f85e63]
+          - cell [ref=f85e64]:
+            - heading [level=4] [ref=f85e65]:
+              - link "Blue Top" [ref=f85e66] [cursor=pointer]:
+                - /url: /product_details/1
+            - paragraph [ref=f85e67]: Women > Tops
+          - cell [ref=f85e68]:
+            - paragraph [ref=f85e69]: Rs. 500
+          - cell [ref=f85e70]:
+            - button "1" [ref=f85e71] [cursor=pointer]
+          - cell [ref=f85e72]:
+            - paragraph [ref=f85e73]: Rs. 500
+          - cell "" [ref=f85e74]
+  - contentinfo [ref=f85e77]:
+    - generic [ref=f85e82]:
+      - heading "Subscription" [level=2] [ref=f85e83]
+      - generic [ref=f85e84]:
+        - textbox "Your email address" [ref=f85e85]
+        - button "" [ref=f85e86] [cursor=pointer]
+        - paragraph [ref=f85e88]: Get the most recent updates from our site and be updated your self...
+    - paragraph [ref=f85e92]: Copyright © 2021 All rights reserved
+    - insertion [ref=f85e94]:
+      - generic [ref=f85e97]:
+        - heading "These are topics related to the article that might interest you" [level=2] [ref=f85e99]: Discover more
+        - link "Online store products" [ref=f85e100] [cursor=pointer]
+        - link "E-commerce product management" [ref=f85e105] [cursor=pointer]
+        - link "API testing tools" [ref=f85e110] [cursor=pointer]
+  - text: 
