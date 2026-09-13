@@ -35,11 +35,16 @@ export default defineConfig({
   },
 
   /* Configure projects for major browsers */
-  projects: [
+   projects: [
+    { name: 'api', testDir: './tests/api' },
+    { name: 'setup', testMatch: /auth\.setup\.ts/ },
     {
-      name: 'chromium',
+      name: 'ui',
+      testDir: './tests/ui',
+      // dependencies: ['setup'],
       use: { ...devices['Desktop Chrome'] },
-    }
+      // use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/user.json' },
+    },
   ],
 
   /* Run your local dev server before starting the tests */

@@ -2,8 +2,8 @@
 // seed: tests/seed.spec.ts
 
 import { expect } from '@playwright/test';
-import { test } from './fixtures/test';
-import { searchTerms } from './test-data/product-search';
+import { test } from '../fixtures/test';
+import { searchTerms } from '../test-data/product-search';
 
 test.describe('Product Search and Cart', () => {
   test('Search, inspect, and add a product to the cart', async ({ productSearch, productDetails, cart }) => {

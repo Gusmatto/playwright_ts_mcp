@@ -1,7 +1,7 @@
 import { test as base } from '@playwright/test';
-import { CartPage } from '../pages/cart.page';
-import { ProductDetailsPage } from '../pages/product-details.page';
-import { ProductSearchPage } from '../pages/product-search.page';
+import { CartPage } from '../ui/pages/cart.page';
+import { ProductDetailsPage } from '../ui/pages/product-details.page';
+import { ProductSearchPage } from '../ui/pages/product-search.page';
 
 type Fixtures = {
   productSearch: ProductSearchPage;
