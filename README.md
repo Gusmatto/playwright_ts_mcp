@@ -13,7 +13,7 @@ where they fail, and what a human still has to do.
 - Playwright Test Agents (`npx playwright init-agents`)
 - Playwright MCP server (`.vscode/mcp.json`)
 - Agent skill with team conventions (`.github/skills/`)
-- Claude Code hook gating agent turns on test results (`.claude/settings.json`)
+- Claude Code hook gating agent turns on a type check of edited `.ts` files (`.claude/settings.json`)
 
 ## Running
 
@@ -55,8 +55,9 @@ the UI project depends on the auth setup and reuses a saved `storageState`.
 2. **Review** — I revise the plan before any code is generated. This step is not optional.
 3. **Generate** — the Generator executes each step in a browser and writes the spec,
    with the conventions skill attached.
-4. **Verify** — a hook runs the suite after every agent edit. The agent cannot end its turn
-   on a failing test.
+4. **Verify** — a hook type-checks the project after every agent edit to a `.ts` file. The
+   agent cannot end its turn on code that does not compile. Running the suite is a separate,
+   explicit step.
 5. **Review and refactor** — I check what the hook cannot: whether the assertions mean
    anything.
 
@@ -148,6 +149,26 @@ the agent fixes the right thing — the decision still came back to me, which is
 locator the agent itself broke. And the hook runs on every `Edit|Write`, including markdown,
 so writing a test plan triggered a full suite run and sent the agent chasing an unrelated
 failure. Scope the matcher to the files that matter.
+
+**Fourth: scoped, and cheaper.** The `matcher` only filters by tool name, so the path filter
+lives in the command: it reads the edited file's path from the hook's stdin JSON and exits `0`
+for anything that isn't `.ts`. For `.ts` edits it type-checks instead of running the suite:
+
+```json
+"matcher": "Edit|Write|MultiEdit",
+"command": "jq -r '.tool_input.file_path // empty' | grep -q '\\.ts$' || exit 0; cd \"$CLAUDE_PROJECT_DIR\" && npx --no-install tsc --noEmit 1>&2 || exit 2"
+```
+
+Three details matter. `MultiEdit` is in the matcher because the healer edits with it.
+`tsc` prints its errors to stdout, but a blocking hook only hands stderr back to the agent,
+so without `1>&2` the agent is stopped without being told why. And `--no-install` matters
+because `npx tsc` with TypeScript absent silently downloads an unrelated npm package named
+`tsc`; TypeScript is a devDependency so the hook never depends on that.
+
+The trade-off is explicit: the hook now guarantees the code compiles, not that the tests pass.
+A full suite run on every edit took long enough, and failed for enough reasons unrelated to
+the edit (network, ad iframes, a live third-party site), that it was more noise than gate.
+Running the affected project is a separate, deliberate step, and CI runs everything.
 
 ## Decisions and trade-offs
 
