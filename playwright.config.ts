@@ -42,7 +42,7 @@ export default defineConfig({
       name: 'ui',
       testDir: './tests/ui',
       // dependencies: ['setup'],
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], testIdAttribute: 'data-qa' },
       // use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/user.json' },
     },
   ],

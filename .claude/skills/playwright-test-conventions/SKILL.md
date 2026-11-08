@@ -6,11 +6,12 @@ description: Conventions for writing Playwright tests in this repo. Use when
 
 ## Locators
 - Use `getByRole` first, then `getByLabel`, `getByPlaceholder`, `getByText`.
-- `getByTestId` only when nothing semantic is available.
+- When nothing semantic is available, use `getByTestId`, which maps to this
+  site's `data-qa` attributes.
 - Never use CSS or XPath selectors tied to DOM structure.
 
 ## Page objects
-- One page object per page, in `pages/`, exported as a class taking `page` in the constructor.
+- One page object per page, in `tests/ui/pages/`, exported as a class taking `page` in the constructor.
 - Methods express business actions (`searchFor`, `addToCart`), not UI mechanics.
 - Locators are defined in the page object, never inline in a spec.
 - Specs contain no raw `page.` calls other than through a page object or fixture.
@@ -23,6 +24,7 @@ description: Conventions for writing Playwright tests in this repo. Use when
 - Every test has at least one assertion that verifies observable behavior,
   not that a click happened.
 - No assertion containing "or" — if the expected behavior is unclear, ask instead of guessing.
+- Avoid assertions that can't fail, e.g., `toHaveCount(0)` on a text filter for a product that doesn't exist.
 
 ## Waiting
 - Never use `waitForTimeout` or any fixed delay.
@@ -31,6 +33,8 @@ description: Conventions for writing Playwright tests in this repo. Use when
 ## Test data
 - Search terms and other inputs come from a shared constant or fixture, never inline literals
   repeated across tests.
+  - Parse prices with a capturing regex (`/Rs\.\s*([\d,]+)/`), not by stripping
+  non-digits.
 
 ## Setup
 - Shared setup goes in a fixture or helper, never repeated as UI steps in each test.
