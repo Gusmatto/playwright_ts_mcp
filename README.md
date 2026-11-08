@@ -11,18 +11,30 @@ where they fail, and what a human still has to do.
 
 - Playwright with TypeScript
 - Playwright Test Agents (`npx playwright init-agents`)
-- Playwright MCP server (`.vscode/mcp.json`)
-- Agent skill with team conventions (`.github/skills/`)
+- Playwright MCP server (`.mcp.json`)
+- Zod for API response schemas
+- Agent skill with team conventions (`.claude/skills/`)
 - Claude Code hook gating agent turns on a type check of edited `.ts` files (`.claude/settings.json`)
 
 ## Running
 
 ```bash
 npm install
-npx playwright test
-npx playwright test --project=ui
-npx playwright test --project=api
+npm test               # everything
+npm run test:api       # API tests, no browser
+npm run test:ui        # UI tests (also runs the setup and cleanup projects)
+npm run typecheck
 ```
+
+## Configuration
+
+One setting: `BASE_URL`, the origin under test (default `https://automationexercise.com`,
+no trailing slash). Set it as an environment variable, or copy `.env.example` to `.env` for
+local use; real environment variables win. It drives Playwright's `baseURL` and the API URL,
+so specs and page objects use relative paths. In CI, set the `BASE_URL` repository variable
+to point the same suite at another environment.
+
+There are no stored credentials. Every account is generated per run and deleted afterwards.
 
 ## Structure
 
@@ -33,21 +45,26 @@ tests/
     pages/          page objects — locators live here, never in specs
     *.spec.ts
   api/
-    clients/        request client: base URL, form encoding, response parsing
-    schemas/        response shape validation
-    *.spec.ts
-  fixtures/         shared setup, used by both layers
-  test-data/        search terms, account builder
-  auth.setup.ts     seeds an account via API, saves an authenticated session
-.github/
+    clients/        request client: form encoding, response parsing
+    schemas/        Zod schemas for response shape validation
+    *.spec.ts       products, search, login, account lifecycle
+  fixtures/         api.ts (api client, self-cleaning account) and test.ts (page objects)
+  test-data/        search terms, account builder, unique emails
+  config/env.ts     BASE_URL and API_URL
+  auth.setup.ts     seeds an account via API, logs in once, saves the session
+  auth.teardown.ts  deletes the seeded account after the UI project
+.claude/
   agents/           planner, generator, healer definitions
   skills/           test conventions applied at generation time
-.claude/
   settings.json     PostToolUse hook
+.github/
+  workflows/        CI: API job (blocking), UI job (non-blocking)
+  scripts/          job-summary.sh writes the pass/fail table to the job summary
 ```
 
-UI and API run as separate Playwright projects. The API project runs without a browser;
-the UI project depends on the auth setup and reuses a saved `storageState`.
+Projects: `api` runs without a browser. `ui` depends on `setup`, reuses its saved
+`storageState`, and `cleanup` runs after it as the setup project's teardown, including when
+UI tests fail.
 
 ## Workflow
 
@@ -63,7 +80,7 @@ the UI project depends on the auth setup and reuses a saved `storageState`.
 
 ## Conventions
 
-Encoded in `.github/skills/playwright-test-conventions/SKILL.md`:
+Encoded in `.claude/skills/playwright-test-conventions/SKILL.md`:
 
 - Role-based locators first; CSS only when the app offers nothing semantic, and then only
   inside a page object
@@ -119,9 +136,9 @@ return Number(match[1].replace(/,/g, ''));
 edited the file and closed its turn with: "next step is running the test to confirm it
 passes." It knew verification was required and ended anyway. That gap is what the hook closes.
 
-## The hook, in three attempts
+## The hook, in four attempts
 
-Getting a hook to actually enforce anything took three tries, and the differences are the
+Getting a hook to actually enforce anything took four tries, and the differences are the
 interesting part.
 
 **First: it never fired.** The command was conditioned on `$CLAUDE_FILE_PATHS` matching
@@ -191,6 +208,12 @@ visibly different output — page objects, fixtures and test data appeared only 
 run. But the parsing bug and the empty assertion survived both. A skill is text the model can
 partially apply. Enforcement needs something deterministic.
 
+**The UI job is non-blocking in CI.** The UI tests drive a live third-party site, so some
+failures have nothing to do with the code. The API job blocks merges; the UI job runs with
+`continue-on-error`, stays red when it fails, writes a pass/fail/flaky table to the job
+summary and uploads the HTML report and traces. It should become blocking once its flaky
+rate is low. Retries are 1 in CI.
+
 **Session state comes from the API, not the UI.** The API's `verifyLogin` endpoint only
 validates credentials and issues no session, so authentication still goes through the login
 form — but once, in a setup project, with the result saved as `storageState`. The account
@@ -198,5 +221,6 @@ itself is created through the API, so no test depends on a pre-existing user.
 
 ## Next
 
-- API specs against the revised plan in `specs/api-test-plan.md`
-- CI pipeline running both projects on push
+- Make the UI job blocking once its flaky rate is low
+- Watch API flakiness in CI: the site once answered `searchProduct` with an HTML page
+  instead of JSON, and a single retry absorbed it
