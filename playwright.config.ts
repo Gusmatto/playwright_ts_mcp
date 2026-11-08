@@ -1,4 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
+import { BASE_URL } from './tests/config/env';
+import { AUTH_STATE_FILE } from './tests/auth-paths';
 
 /**
  * Read environment variables from file.
@@ -26,7 +28,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: BASE_URL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -37,13 +39,13 @@ export default defineConfig({
   /* Configure projects for major browsers */
    projects: [
     { name: 'api', testDir: './tests/api' },
-    { name: 'setup', testMatch: /auth\.setup\.ts/ },
+    { name: 'setup', testMatch: /auth\.setup\.ts/, teardown: 'cleanup' },
+    { name: 'cleanup', testMatch: /auth\.teardown\.ts/ },
     {
       name: 'ui',
       testDir: './tests/ui',
-      // dependencies: ['setup'],
-      use: { ...devices['Desktop Chrome'], testIdAttribute: 'data-qa' },
-      // use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/user.json' },
+      dependencies: ['setup'],
+      use: { ...devices['Desktop Chrome'], testIdAttribute: 'data-qa', storageState: AUTH_STATE_FILE },
     },
   ],
 

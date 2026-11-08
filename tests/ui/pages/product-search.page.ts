@@ -24,7 +24,7 @@ export class ProductSearchPage {
   }
 
   async open(): Promise<void> {
-    await this.page.goto('https://www.automationexercise.com/products', {
+    await this.page.goto('/products', {
       waitUntil: 'domcontentloaded',
     });
   }

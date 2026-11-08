@@ -1,6 +1,8 @@
 import type { APIRequestContext } from '@playwright/test';
 
-export const API_BASE_URL = 'https://automationexercise.com/api';
+import { API_URL } from '../../config/env';
+
+export const API_BASE_URL = API_URL;
 
 /**
  * Every endpoint answers HTTP 200 and carries the real outcome in `responseCode`.
